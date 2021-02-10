@@ -1,0 +1,81 @@
+#!/usr/bin/env perl
+use strict;
+
+use CGI;
+
+my $VERSION = '6.9';
+
+my $cgi = new CGI;
+
+my $url = CGI::escapeHTML($cgi->param('url')) || '';
+my $virus = CGI::escapeHTML($cgi->param('virus')) || CGI::escapeHTML($cgi->param('malware')) || '';
+my $source = CGI::escapeHTML($cgi->param('source')) || '';
+$source =~ s/\/-//;
+my $user = CGI::escapeHTML($cgi->param('user')) || '';
+
+
+my $TITLE_VIRUS = "SquidClamAv $VERSION: Virus detected!";
+my $subtitle = 'Virus name';
+my $errorreturn = 'This file cannot be downloaded.';
+my $urlerror = 'contains a virus';
+if ($virus =~ /Safebrowsing/) {
+	$TITLE_VIRUS = "SquidClamAv $VERSION: Unsafe Browsing detected";
+	$subtitle = 'Malware / pishing type';
+	$urlerror = 'is listed as suspicious';
+	$errorreturn = 'This page can not be displayed';
+}
+
+# Remove clamd infos
+$virus =~ s/stream: //;
+$virus =~ s/ FOUND//;
+
+
+print $cgi->header();
+
+print $cgi->start_html(-title => $TITLE_VIRUS, -bgcolor => "#353535");
+print qq{
+<style type="text/css">
+.visu {
+	border:1px solid #C0C0C0;
+	color:#FFFFFF;
+	position: relative;
+	min-width: 13em;
+	max-width: 52em;
+	margin: 4em auto;
+	border: 1px solid ThreeDShadow;
+	border-radius: 10px;
+	padding: 3em;
+	-moz-padding-start: 30px;
+	background-color: #8b0000;
+}
+.visu h2, .visu h3, .visu h4 {
+	font-size:130%;
+	font-family:"times new roman", times, serif;
+	font-style:normal;
+	font-weight:bolder;
+}
+</style>	
+	<div class="visu">
+	<h2>$TITLE_VIRUS</h2>
+	<hr>
+	<p>
+};
+print qq{
+	The requested URL $url $urlerror<br>
+	$subtitle: $virus
+};
+
+print qq{
+	<p>
+	$errorreturn
+	<p>
+	Origin: $source / $user
+	<p>
+	<hr>
+	<font color="blue"> Powered by <a href="https://proxy.casjay.net/">Casjays Developments Proxy</a>.</font>
+	</div>
+};
+
+print $cgi->end_html();
+
+exit 0;

@@ -46,7 +46,7 @@ system_installdirs
 scripts_check
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Defaults
-APPNAME="${APPNAME:-httpd2}"
+APPNAME="${APPNAME:-httpd}"
 APPDIR="/usr/local/etc/$APPNAME"
 INSTDIR="$SYSSHARE/CasjaysDev/systemmgr/$APPNAME"
 REPO_BRANCH="${GIT_REPO_BRANCH:-master}"

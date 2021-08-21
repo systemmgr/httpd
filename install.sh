@@ -135,6 +135,7 @@ run_postinst() {
   local apache2user
   local sitename="$(hostname -f)"
   systemmgr_run_post
+  if_os_id arch && sed_replace "modules/mod_perl.so" "#modules/mod_perl.so" "$INSTDIR/conf/httpd.conf"
   if [ -d /etc/httpd ]; then
     local apache2user="httpd"
     cp_rf "$INSTDIR/src/etc-httpd/." /etc/httpd

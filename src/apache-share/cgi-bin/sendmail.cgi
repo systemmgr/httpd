@@ -11,7 +11,7 @@
 # Modifications Copyright (c) 1998 Network Now, All Rights Reserved.         #
 # This version of FormMail may be used and modified free of charge by anyone #
 # so long as this copyright notice and the one below by Matthew Wright and   #
-# Brian Sietz remain intact. By using this code you agree to indemnify       # 
+# Brian Sietz remain intact. By using this code you agree to indemnify       #
 # Network Now from any liability arising from it's use. You also agree that  #
 # this code cannot be sold to any third party without prior written consent  #
 # of both Network Now, Brian Sietz and Matthew M. Wright.		     #
@@ -94,9 +94,9 @@
 #                                                                            #
 
 
-$cfh = select (STDOUT); 
-          $| = 1; 
-          select ($cfh); 
+$cfh = select (STDOUT);
+          $| = 1;
+          select ($cfh);
 
 # Define Variables                                                           #
 #	 Detailed Information Found In README File.                          #
@@ -104,7 +104,7 @@ $cfh = select (STDOUT);
 # $mailprog defines the location of your sendmail program on your unix       #
 # system.                                                                    #
 
-$mailprog = '/usr/lib/sendmail';
+$mailprog = '/usr/lib/sendmail -i -t';
 
 # @referers allows forms to be located only on servers which are defined     #
 # in this field.  This security fix from the last version which allowed      #
@@ -181,7 +181,7 @@ sub get_date {
     $time = sprintf("%02d:%02d:%02d",$hour,$min,$sec);
     $year += 1900;
 
-    # Format the date.                                                       
+    # Format the date.
     $date = "$days[$wday], $months[$mon] $mday, $year at $time";
     $mon2 = $mon + 1;
     $date2 = "$mon2/$mday/$year";
@@ -189,7 +189,7 @@ sub get_date {
 
 sub parse_form {
 
-    # Define the configuration associative array.                            
+    # Define the configuration associative array.
     %Config = ('recipient','',          'subject','',
                'sendboth','',           'exclude','',
                'redirect','',           'bgcolor','',
@@ -210,7 +210,7 @@ sub parse_form {
 
 	       'append_db','',          'db_delimiter','',
 	       'db_fields','',
-	       
+
 	        'goldmine','',
 	        'DupNotify','',		'NewNotify','',
 		'Track1','',		'Track2','',
@@ -237,7 +237,7 @@ sub parse_form {
     elsif ($ENV{'REQUEST_METHOD'} eq 'POST') {
         # Get the input
         read(STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
- 
+
         # Split the name-value pairs
         @pairs = split(/&/, $buffer);
     }
@@ -250,7 +250,7 @@ sub parse_form {
 
         # Split the pair up into individual variables.                       #
         ($name, $value) = split(/=/, $pair);
- 
+
         # Decode the form encoding on the name and value variables.          #
         $name =~ tr/+/ /;
         $name =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
@@ -259,7 +259,7 @@ sub parse_form {
         $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
 
         # If they try to include server side includes, erase them, so they
-        # aren't a security risk if the html gets returned.  Another 
+        # aren't a security risk if the html gets returned.  Another
         # security hole plugged up.
         $value =~ s/<!--(.|\n)*-->//g;
 
@@ -382,29 +382,21 @@ sub return_html {
         print ">\n  <center>\n";
 
         # Print custom or generic title.
-        
-        
+
+
         print "<BR><table  border=1 cellpadding=0 cellspacing=0 width=650><tr><td>\n";
         print "<table   border=0 cellpadding=5 cellspacing=0 width=650>\n";
-        print "<tr><td colspan=3  align=center bgcolor=#333366>\n";
+        print "<tr><td colspan=3  align=center bgcolor=#000000>\n";
         print "<font face=arial size=+2 color=#FFFFFF><b>\n";
-        
+
         if ($Config{'title'}) { print "$Config{'title'}\n" }
         else { print "Thank You For Filling Out This Form\n" }
-        
+
         print "</b></td></tr><tr>\n";
-        print "<td colspan=3 align=center bgcolor=#D0D0D0><font face=arial>\n";                                   #
+        print "<td colspan=3 align=center bgcolor=#000000><font face=arial>\n";                                   #
         print "$date\n";
         print "</td></tr><tr><td colspan=3 align=center><font face=arial></td></tr>\n";
         print "<tr><td colspan=3><BR></td></tr>\n";
-        
-        
-
-         
-        if ($Form{'Email'}) {
-            print "<tr><td align=right><font face=arial><b>E-mail:</b></td>\n";
-	    print "<td align=left><font face=arial>$Form{'Email'}</td><td width=100></td></tr>\n";
-        }
 
 
         # Sort alphabetically if specified:                                  #
@@ -414,7 +406,7 @@ sub return_html {
                 # If the field has a value or the print blank fields option  #
                 # is turned on, print out the form field and value.          #
                 if ($Config{'print_blank_fields'} || $Form{$field}) {
- 
+
                     print "<tr><td align=right><font face=arial><b>$field:</b></td>\n";
 		    print "<td align=left><font face=arial>$Form{$field}</td><td width=100></td></tr>\n";
 
@@ -438,7 +430,7 @@ sub return_html {
             # fields option is turned on print the form field and value.     #
             foreach $sorted_field (@sorted_fields) {
                 if ($Config{'print_blank_fields'} || $Form{$sorted_field}) {
- 
+
                     print "<tr><td align=right><font face=arial><b>$sorted_field:</b></td>\n";
 		    print "<td align=left><font face=arial>$Form{$sorted_field}</td><td width=100></td></tr>\n";
 
@@ -462,13 +454,13 @@ sub return_html {
         }
 
  print "<tr><td colspan=3><BR></td></tr><tr>\n";
- print "<td colspan=3 align=center bgcolor=#D0D0D0>
+ print "<td colspan=3 align=center bgcolor=#000000>
  <font face=arial>Please direct all inquiries to <a href=\"mailto:$Config{'recipient'}\">$Config{'recipient'}</a></td></tr>\n";
 if ($Config{'return_link_url'} && $Config{'return_link_title'}) {
-print "<td colspan=3 align=center bgcolor=#D0D0D0><font face=arial><a href=\"$Config{'return_link_url'}\">$Config{'return_link_title'}</a></td></tr>\n";
+print "<td colspan=3 align=center bgcolor=#000000><font face=arial><a href=\"$Config{'return_link_url'}\">$Config{'return_link_title'}</a></td></tr>\n";
 }
-print "<td colspan=3 align=center bgcolor=#C0C0C0><font face=arial size=-2><a href=\"javascript: history.go(-1)\"></a></td></tr>\n";
-print "<td colspan=3 align=center bgcolor=#C0C0C0><font face=arial size=-2><a href=\"http://casjaysdev.com/\">CasjaysDev</a></td></tr>\n";
+print "<td colspan=3 align=center bgcolor=#000000><font face=arial size=-2><a href=\"javascript: history.go(-1)\"></a></td></tr>\n";
+print "<td colspan=3 align=center bgcolor=#000000><font face=arial size=-2><a href=\"http://casjaysdev.com/\">CasjaysDev</a></td></tr>\n";
  print "</table></td></tr></table>\n";
  print "<br clear=all></center>\n";
 
@@ -488,11 +480,11 @@ sub send_mail {
 
     local($print_config,$key,$sort_order,$sorted_field,$env_report,$print_db,$field);
    undef %is_exclude;
-for (@Exclude) { $is_exclude{$_} = 1 }  
+for (@Exclude) { $is_exclude{$_} = 1 }
     # Open The Mail Program
-    open(MAIL,"|$mailprog -t");
+    open(MAIL,"|$mailprog");
 
- 
+
         print MAIL "To: $Config{'recipient'}\n";
         print MAIL "From: $Form{'Email'} ($Form{'Name'})\n";
 	if ($Config{'cc'} && check_email($Config{'cc'}))
@@ -511,8 +503,8 @@ for (@Exclude) { $is_exclude{$_} = 1 }
 
     print MAIL "-" x 75 . "\n\n";
 
-    
-   
+
+
 
 
     # Sort alphabetically if specified:                                      #
@@ -612,7 +604,7 @@ for (@Exclude) { $is_exclude{$_} = 1 }
 
         }
 
-        print DATABASE "\n"; 
+        print DATABASE "\n";
     close (DATABASE);
 
     &unlockit ("$Config{'append_db'}.lock");
@@ -629,7 +621,7 @@ sub send_GMmail {
     local($print_config,$key,$sort_order,$sorted_field,$env_report);
 
     # Open The Mail Program
-    open(MAIL,"|$mailprog -t");
+    open(MAIL,"|$mailprog");
 
     print MAIL "To: $Config{'recipient'}\n";
     print MAIL "From: $Form{'Email'}\n";
@@ -643,20 +635,20 @@ sub send_GMmail {
 
     print MAIL "[Instructions]\n";
     print MAIL "SaveThis=$Config{'subject'}\n";
-    print MAIL "DupCheck1=Contact\n";                                   
-    print MAIL "DupCheck2=Phone1\n"; 
-    if ($Config{'DupNotify'}) { print MAIL "OnDupSendEmail=$Config{'DupNotify'},DUP,$Form{'Contact'} Duplicate Web Contact!\n" }				 
-    if ($Config{'NewNotify'}) { print MAIL "OnNewSendEmail=$Config{'NewNotify'},NEW,$Form{'Contact'} New Web Contact!\n" }				 
-    if ($Config{'Track1'}) { print MAIL "OnNewAttachTrack1=$Config{'Track1'}\n" }				 
-    if ($Config{'Track1'}) { print MAIL "OnDupAttachTrack1=$Config{'Track1'}\n" }				 
-    if ($Config{'Track2'}) { print MAIL "OnNewAttachTrack2=$Config{'Track2'}\n" }				 
-    if ($Config{'Track2'}) { print MAIL "OnDupAttachTrack2=$Config{'Track2'}\n" }				 
-    if ($Config{'Track3'}) { print MAIL "OnNewAttachTrack3=$Config{'Track3'}\n" }				 
-    if ($Config{'Track3'}) { print MAIL "OnDupAttachTrack3=$Config{'Track3'}\n" }				 
-    print MAIL "\n";                                                    
+    print MAIL "DupCheck1=Contact\n";
+    print MAIL "DupCheck2=Phone1\n";
+    if ($Config{'DupNotify'}) { print MAIL "OnDupSendEmail=$Config{'DupNotify'},DUP,$Form{'Contact'} Duplicate Web Contact!\n" }
+    if ($Config{'NewNotify'}) { print MAIL "OnNewSendEmail=$Config{'NewNotify'},NEW,$Form{'Contact'} New Web Contact!\n" }
+    if ($Config{'Track1'}) { print MAIL "OnNewAttachTrack1=$Config{'Track1'}\n" }
+    if ($Config{'Track1'}) { print MAIL "OnDupAttachTrack1=$Config{'Track1'}\n" }
+    if ($Config{'Track2'}) { print MAIL "OnNewAttachTrack2=$Config{'Track2'}\n" }
+    if ($Config{'Track2'}) { print MAIL "OnDupAttachTrack2=$Config{'Track2'}\n" }
+    if ($Config{'Track3'}) { print MAIL "OnNewAttachTrack3=$Config{'Track3'}\n" }
+    if ($Config{'Track3'}) { print MAIL "OnDupAttachTrack3=$Config{'Track3'}\n" }
+    print MAIL "\n";
     print MAIL "[Data]\n";
-  
-   if ($Form{'Company'}) { print MAIL "Company=$Form{'Company'}\n" }	
+
+   if ($Form{'Company'}) { print MAIL "Company=$Form{'Company'}\n" }
    if ($Form{'Name'}) { print MAIL "Contact=$Form{'Name'}\n" }
    if ($Form{'Address1'}) { print MAIL "Address1=$Form{'Address1'}\n" }
    if ($Form{'Address2'}) { print MAIL "Address2=$Form{'Address2'}\n" }
@@ -704,18 +696,18 @@ sub send_GMmail {
    if ($Form{'CustomField09'}){ print MAIL "$Config{'CustomFieldName09'}=$Form{'CustomField09'}\n" }
    if ($Form{'CustomField10'}){ print MAIL "$Config{'CustomFieldName10'}=$Form{'CustomField10'}\n" }
 
-    print MAIL "\n"; 
+    print MAIL "\n";
     print MAIL "[ContSupp]\n";
 
- if ($Form{'Email'}) { print MAIL "cs1_ContSupRef=$Form{'Email'}\n"; 
+ if ($Form{'Email'}) { print MAIL "cs1_ContSupRef=$Form{'Email'}\n";
                        print MAIL "cs1_Contact=E-mail Address\n";
                        print MAIL "cs1_RecType=P\n" }
 
- if ($Form{'WebSite'}) { print MAIL "cs2_ContSupRef=$Form{'WebSite'}\n"; 
+ if ($Form{'WebSite'}) { print MAIL "cs2_ContSupRef=$Form{'WebSite'}\n";
                          print MAIL "cs2_Contact=Web Site\n";
                          print MAIL "cs2_RecType=P\n" }
 
- if ($Form{'Contact2'}) { print MAIL "cs3_RecType=C\n"; 
+ if ($Form{'Contact2'}) { print MAIL "cs3_RecType=C\n";
                          print MAIL "cs3_Contact=$Form{'Contact2'}\n";
                          print MAIL "cs3_Title=$Form{'C2_Title'}\n";
                          print MAIL "cs3_Address1=$Form{'C2_Address1'}\n";
@@ -731,7 +723,7 @@ sub send_GMmail {
                          print MAIL "cs3_Notes=$Form{'C2_Notes'}\n"}
 
 
-if ($Config{'ProfDesc01'}) { print MAIL "cs4_ContSupRef=$Form{'Profile01'}\n"; 
+if ($Config{'ProfDesc01'}) { print MAIL "cs4_ContSupRef=$Form{'Profile01'}\n";
                              print MAIL "cs4_Title=$Form{'P1Title'}\n";
                              print MAIL "cs4_LinkAcct=$Form{'P1LinkAcct'}\n";
                              print MAIL "cs4_Country=$Form{'P1Country'}\n";
@@ -742,7 +734,7 @@ if ($Config{'ProfDesc01'}) { print MAIL "cs4_ContSupRef=$Form{'Profile01'}\n";
                              print MAIL "cs4_Address2=$Form{'P1Address2'}\n";
                           print MAIL "cs4_Contact=$Config{'ProfDesc01'}\n";
                           print MAIL "cs4_RecType=P\n" }
-if ($Config{'ProfDesc02'}) { print MAIL "cs5_ContSupRef=$Form{'Profile02'}\n"; 
+if ($Config{'ProfDesc02'}) { print MAIL "cs5_ContSupRef=$Form{'Profile02'}\n";
                              print MAIL "cs5_Title=$Form{'P2Title'}\n";
                              print MAIL "cs5_LinkAcct=$Form{'P2LinkAcct'}\n";
                              print MAIL "cs5_Country=$Form{'P2Country'}\n";
@@ -751,9 +743,9 @@ if ($Config{'ProfDesc02'}) { print MAIL "cs5_ContSupRef=$Form{'Profile02'}\n";
                              print MAIL "cs5_State=$Form{'P2State'}\n";
                              print MAIL "cs5_Address1=$Form{'P2Address1'}\n";
                              print MAIL "cs5_Address2=$Form{'P2Address2'}\n";
-                          print MAIL "cs5_Contact=$Config{'ProfDesc02'}\n";                         
+                          print MAIL "cs5_Contact=$Config{'ProfDesc02'}\n";
                           print MAIL "cs5_RecType=P\n" }
-if ($Config{'ProfDesc03'}) { print MAIL "cs6_ContSupRef=$Form{'Profile03'}\n"; 
+if ($Config{'ProfDesc03'}) { print MAIL "cs6_ContSupRef=$Form{'Profile03'}\n";
                              print MAIL "cs6_Title=$Form{'P3Title'}\n";
                              print MAIL "cs6_LinkAcct=$Form{'P3LinkAcct'}\n";
                              print MAIL "cs6_Country=$Form{'P3Country'}\n";
@@ -764,7 +756,7 @@ if ($Config{'ProfDesc03'}) { print MAIL "cs6_ContSupRef=$Form{'Profile03'}\n";
                              print MAIL "cs6_Address2=$Form{'P3Address2'}\n";
                           print MAIL "cs6_Contact=$Config{'ProfDesc03'}\n";
                           print MAIL "cs6_RecType=P\n" }
-if ($Config{'ProfDesc04'}) { print MAIL "cs7_ContSupRef=$Form{'Profile04'}\n"; 
+if ($Config{'ProfDesc04'}) { print MAIL "cs7_ContSupRef=$Form{'Profile04'}\n";
                              print MAIL "cs7_Title=$Form{'P4Title'}\n";
                              print MAIL "cs7_LinkAcct=$Form{'P4LinkAcct'}\n";
                              print MAIL "cs7_Country=$Form{'P4Country'}\n";
@@ -775,7 +767,7 @@ if ($Config{'ProfDesc04'}) { print MAIL "cs7_ContSupRef=$Form{'Profile04'}\n";
                              print MAIL "cs7_Address2=$Form{'P4Address2'}\n";
                           print MAIL "cs7_Contact=$Config{'ProfDesc04'}\n";
                           print MAIL "cs7_RecType=P\n" }
-if ($Config{'ProfDesc05'}) { print MAIL "cs8_ContSupRef=$Form{'Profile05'}\n"; 
+if ($Config{'ProfDesc05'}) { print MAIL "cs8_ContSupRef=$Form{'Profile05'}\n";
                              print MAIL "cs8_Title=$Form{'P5Title'}\n";
                              print MAIL "cs8_LinkAcct=$Form{'P5LinkAcct'}\n";
                              print MAIL "cs8_Country=$Form{'P5Country'}\n";
@@ -786,7 +778,7 @@ if ($Config{'ProfDesc05'}) { print MAIL "cs8_ContSupRef=$Form{'Profile05'}\n";
                              print MAIL "cs8_Address2=$Form{'P5Address2'}\n";
                           print MAIL "cs8_Contact=$Config{'ProfDesc05'}\n";
                           print MAIL "cs8_RecType=P\n" }
-if ($Config{'ProfDesc06'}) { print MAIL "cs9_ContSupRef=$Form{'Profile06'}\n"; 
+if ($Config{'ProfDesc06'}) { print MAIL "cs9_ContSupRef=$Form{'Profile06'}\n";
                              print MAIL "cs9_Title=$Form{'P6Title'}\n";
                              print MAIL "cs9_LinkAcct=$Form{'P6LinkAcct'}\n";
                              print MAIL "cs9_Country=$Form{'P6Country'}\n";
@@ -797,7 +789,7 @@ if ($Config{'ProfDesc06'}) { print MAIL "cs9_ContSupRef=$Form{'Profile06'}\n";
                              print MAIL "cs9_Address2=$Form{'P6Address2'}\n";
                           print MAIL "cs9_Contact=$Config{'ProfDesc06'}\n";
                           print MAIL "cs9_RecType=P\n" }
-if ($Config{'ProfDesc07'}) { print MAIL "cs10_ContSupRef=$Form{'Profile07'}\n"; 
+if ($Config{'ProfDesc07'}) { print MAIL "cs10_ContSupRef=$Form{'Profile07'}\n";
                              print MAIL "cs10_Title=$Form{'P7Title'}\n";
                              print MAIL "cs10_LinkAcct=$Form{'P7LinkAcct'}\n";
                              print MAIL "cs10_Country=$Form{'P7Country'}\n";
@@ -808,7 +800,7 @@ if ($Config{'ProfDesc07'}) { print MAIL "cs10_ContSupRef=$Form{'Profile07'}\n";
                              print MAIL "cs10_Address2=$Form{'P7Address2'}\n";
                           print MAIL "cs10_Contact=$Config{'ProfDesc07'}\n";
                           print MAIL "cs10_RecType=P\n" }
-if ($Config{'ProfDesc08'}) { print MAIL "cs11_ContSupRef=$Form{'Profile08'}\n"; 
+if ($Config{'ProfDesc08'}) { print MAIL "cs11_ContSupRef=$Form{'Profile08'}\n";
                              print MAIL "cs11_Title=$Form{'P8Title'}\n";
                              print MAIL "cs11_LinkAcct=$Form{'P8LinkAcct'}\n";
                              print MAIL "cs11_Country=$Form{'P8Country'}\n";
@@ -819,7 +811,7 @@ if ($Config{'ProfDesc08'}) { print MAIL "cs11_ContSupRef=$Form{'Profile08'}\n";
                              print MAIL "cs11_Address2=$Form{'P8Address2'}\n";
                           print MAIL "cs11_Contact=$Config{'ProfDesc08'}\n";
                           print MAIL "cs11_RecType=P\n" }
-if ($Config{'ProfDesc09'}) { print MAIL "cs12_ContSupRef=$Form{'Profile09'}\n"; 
+if ($Config{'ProfDesc09'}) { print MAIL "cs12_ContSupRef=$Form{'Profile09'}\n";
                              print MAIL "cs12_Title=$Form{'P9Title'}\n";
                              print MAIL "cs12_LinkAcct=$Form{'P9LinkAcct'}\n";
                              print MAIL "cs12_Country=$Form{'P9Country'}\n";
@@ -830,7 +822,7 @@ if ($Config{'ProfDesc09'}) { print MAIL "cs12_ContSupRef=$Form{'Profile09'}\n";
                              print MAIL "cs12_Address2=$Form{'P9Address2'}\n";
                           print MAIL "cs12_Contact=$Config{'ProfDesc09'}\n";
                           print MAIL "cs12_RecType=P\n" }
-if ($Config{'ProfDesc10'}) { print MAIL "cs13_ContSupRef=$Form{'Profile10'}\n"; 
+if ($Config{'ProfDesc10'}) { print MAIL "cs13_ContSupRef=$Form{'Profile10'}\n";
                              print MAIL "cs13_Title=$Form{'P10Title'}\n";
                              print MAIL "cs13_LinkAcct=$Form{'P10LinkAcct'}\n";
                              print MAIL "cs13_Country=$Form{'P10Country'}\n";
@@ -904,8 +896,8 @@ sub body_attributes {
 
 sub send_courtesy {
   if ($Config{'courtesy_reply'} && $Form{'Email'})
- { 
-   open (MAIL,"|$mailprog -t");
+ {
+   open (MAIL,"|$mailprog");
    print MAIL "To: $Form{'Email'} ($Form{'Name'})\n";
    print MAIL "From: $Config{'courtesy_our_email'}\n";
 
@@ -927,9 +919,9 @@ sub send_courtesy {
 
      print MAIL "-" x 75 . "\n\n";
 
-  
-   
-    # Sort alphabetically if specified:  
+
+
+    # Sort alphabetically if specified:
     undef %is_exclude;
 for (@Exclude) { $is_exclude{$_} = 1 }                                    #
     if ($Config{'sort'} eq 'alphabetic') {
@@ -1008,18 +1000,18 @@ if ($Config{'courtesy_our_url'}) {
 
 sub lockit
 {
-  local ($endtime);                                   
-  $endtime = 60;                                      
-  $endtime = time + $endtime;                         
-  while (-e $lock_file && time < $endtime) 
+  local ($endtime);
+  $endtime = 60;
+  $endtime = time + $endtime;
+  while (-e $lock_file && time < $endtime)
    {
-    # Do Nothing                                    
-   }                                                   
-   open(LOCK_FILE, ">$lock_file");                     
+    # Do Nothing
+   }
+   open(LOCK_FILE, ">$lock_file");
 }
 
 
- 
+
 
 
 
@@ -1038,11 +1030,11 @@ sub file_open_error
   local ($bad_file, $script_section, $this_file, $line_number) = @_;
   print "Content-type: text/html\n\n";
   &CgiDie ("I am sorry, but I was not able to access $bad_file.")
-  }     
+  }
 
 
 
-sub error { 
+sub error {
     # Localize variables and assign subroutine input.                        #
     local($error,@error_fields) = @_;
     local($host,$missing_field,$missing_field_list);
@@ -1057,7 +1049,7 @@ Content-type: text/html
  <head>
   <title>Bad Referrer - Access Denied</title>
  </head>
- <body bgcolor=#FFFFFF text=#000000>
+ <body bgcolor=#000000 text=#FFFFFF>
   <center>
   <BR>
   <BR>
@@ -1069,7 +1061,7 @@ Content-type: text/html
               Bad Referrer - Access Denied</b></td></tr>
                 <tr>
                 <td width=150>
-               </td><td bgcolor=#FFFFFF><font face=arial> <BR>                                
+               </td><td bgcolor=#000000><font face=arial> <BR>
                     The form attempting to use <br><a href="http://casjaysdev.com">CasjaysDev.com FormMail</a>
                      resides at <tt>$ENV{'HTTP_REFERER'}</tt>, which is not allowed to access
                      this cgi script.<p> If you are attempting to configure CasjaysDev.com FormMail to run with this form, you need
@@ -1078,7 +1070,7 @@ Content-type: text/html
                 </td>
                 <td width=150>
                 </td></tr><tr><td colspan=3><br></td></tr>
-                <tr><td colspan=3 align=center bgcolor=#C0C0C0>
+                <tr><td colspan=3 align=center bgcolor=#000000>
                 <font face=arial size=-2>
                 <a href="javascript: history.go(-1)">Go Back</a><br>
                 <a href="http://casjaysdev.com">CasjaysDev.com</a>
@@ -1100,7 +1092,7 @@ Content-type: text/html
  <head>
   <title>CasjaysDev.com FormMail</title>
  </head>
- <body bgcolor=#FFFFFF text=#000000>
+ <body bgcolor=#000000 text=#FFFFFF>
   <center>
   <BR>
   <BR>
@@ -1116,7 +1108,7 @@ Content-type: text/html
                </td>
                 <td width=150>
                 </td></tr><tr><td colspan=3><br></td></tr>
-                <tr><td colspan=3 align=center bgcolor=#C0C0C0>
+                <tr><td colspan=3 align=center bgcolor=#000000>
                 <font face=arial size=-2>
                 <a href="javascript: history.go(-1)">Go Back</a>
                 <br><a href="http://casjaysdev.com">CasjaysDev.com</a>
@@ -1140,7 +1132,7 @@ Content-type: text/html
  <head>
   <title>Error: Request Method</title>
  </head>
- <body bgcolor=#FFFFFF text=#000000>
+ <body bgcolor=#000000 text=#FFFFFF>
   <center>
   <BR>
   <BR>
@@ -1152,14 +1144,14 @@ Content-type: text/html
               Error: Request Method</b></td></tr>
                 <tr>
                 <td width=150>
-               </td><td bgcolor=#FFFFFF><font face=arial> <BR>                                
+               </td><td bgcolor=#000000><font face=arial> <BR>
                     The Request Method of the Form you submitted did not match
      either <tt>GET</tt> or <tt>POST</tt>.  Please check the form and make sure the
      <tt>method=</tt> statement is in upper case and matches <tt>GET</tt> or <tt>POST</tt>.<p>
                 </td>
                 <td width=150>
                 </td></tr><tr><td colspan=3><br></td></tr>
-                <tr><td colspan=3 align=center bgcolor=#C0C0C0>
+                <tr><td colspan=3 align=center bgcolor=#000000>
                 <font face=arial size=-2>
                 <a href="javascript: history.go(-1)">Go Back</a><br>
                 <a href="http://casjaysdev.com">CasjaysDev.com</a>
@@ -1182,7 +1174,7 @@ Content-type: text/html
  <head>
   <title>No Recipient</title>
  </head>
- <body bgcolor=#FFFFFF text=#000000>
+ <body bgcolor=#000000 text=#FFFFFF>
   <center>
   <BR>
   <BR>
@@ -1194,14 +1186,14 @@ Content-type: text/html
               Error: No Recipient</b></td></tr>
                 <tr>
                 <td width=150>
-               </td><td bgcolor=#FFFFFF><font face=arial> <BR> No Recipient was specified in the data sent to CasjaysDev.com FormMail.  Please
+               </td><td bgcolor=#000000><font face=arial> <BR> No Recipient was specified in the data sent to CasjaysDev.com FormMail.  Please
      make sure you have filled in the 'recipient' form field with an e-mail
      address.  More information on filling in recipient form fields can be
      found in the README file.<p>
                 </td>
                 <td width=150>
                 </td></tr><tr><td colspan=3><br></td></tr>
-                <tr><td colspan=3 align=center bgcolor=#C0C0C0>
+                <tr><td colspan=3 align=center bgcolor=#000000>
                 <font face=arial size=-2>
                 <a href="javascript: history.go(-1)">Go Back</a><br>
                 <a href="http://casjaysdev.com">CasjaysDev.com</a>
@@ -1232,7 +1224,7 @@ Content-type: text/html
  <head>
   <title>Error: Blank Fields</title>
  </head>
- <body bgcolor=#FFFFFF text=#000000>
+ <body bgcolor=#000000 text=#FFFFFF>
   <center>
   <BR>
   <BR>
@@ -1244,7 +1236,7 @@ Content-type: text/html
               Error: Blank Fields</b></td></tr>
                 <tr>
                 <td width=150>
-               </td><td bgcolor=#FFFFFF><font face=arial> <BR>                                
+               </td><td bgcolor=#000000><font face=arial> <BR>
                     The following fields were left blank in your submission form:<p>
      <ul>
 $missing_field_list
@@ -1255,7 +1247,7 @@ $missing_field_list
                 </td>
                 <td width=150>
                 </td></tr><tr><td colspan=3><br></td></tr>
-                <tr><td colspan=3 align=center bgcolor=#C0C0C0>
+                <tr><td colspan=3 align=center bgcolor=#000000>
                 <font face=arial size=-2>
                 <a href="javascript: history.go(-1)">Go Back</a><br>
                 <a href="http://casjaysdev.com">CasjaysDev.com</a>

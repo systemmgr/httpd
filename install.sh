@@ -174,9 +174,13 @@ run_postinst() {
   if [ -f "$(command -v pacman 2>/dev/null)" ]; then
     find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; >/dev/null 2>&1
     find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; >/dev/null 2>&1
   elif [ -f "$(command -v apt-get 2>/dev/null)" ]; then
     find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
     find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
   fi
   find "$httpd_dir" -not -path "./git/*" -type f -iname "*.conf" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1
   find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1

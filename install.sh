@@ -152,7 +152,7 @@ run_postinst() {
   [[ -d "$httpd_log" ]] || mkd "$httpd_log"
   [[ -d "$httpd_web/unknown" ]] || mkd "$httpd_web/unknown"
   [[ -d "$httpd_web/default" ]] || mkd "$httpd_web/default"
-  [[ -e "$httpd_dir/logs" ]] || ln_sf "$httpd_log" "$httpd_dir/logs"
+  [[ -L "$httpd_dir/logs" ]] || ln_sf "$httpd_log" "$httpd_dir/logs"
   cp_rf "$INSTDIR/src/$httpd_src/." "$httpd_dir"
   ln_sf "$INSTDIR/src/apache-share/html/index.default.php" "$httpd_web/default/index.default.php"
   ln_sf "$INSTDIR/src/apache-share/html/index.unknown.php" "$httpd_web/unknown/index.unknown.php"
@@ -186,6 +186,7 @@ run_postinst() {
   if [ -n "$apache2user" ]; then
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log" "$httpd_dir"
   fi
+  mkd /run/mod_fcgid
   systemctl enable --now httpd || systemctl enable --now apache2
   systemctl restart httpd || systemctl restart apache2
 }

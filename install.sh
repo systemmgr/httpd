@@ -133,46 +133,46 @@ fi
 # run post install scripts
 run_postinst() {
   systemmgr_run_post
-  local apache2user sitename
+  local apache2user sitename httpd_dir httpd_shared
   sitename="$(hostname -f)"
+  httpd_shared="/usr/share/httpd"
+  { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/httpd"; } || { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/apache2"; }
+  cp_rf "$INSTDIR/src/etc-httpd/." "$httpd_dir"
   if [[ -f "$(builtin type -P pacman)" ]]; then
     local apache2user="http"
-    cp_rf "$INSTDIR/src/etc-httpd/." /etc/httpd
     cp_rf "$INSTDIR/src/etc-httpd/conf/httpd-arch.conf" "/etc/httpd/conf/httpd.conf"
   elif [ -d /etc/httpd ]; then
     local apache2user="httpd"
-    cp_rf "$INSTDIR/src/etc-httpd/." /etc/httpd
   elif [ -d /etc/httpd ]; then
     local apache2user="www-data"
-    cp_rf "$INSTDIR/src/etc-apache2/." /etc/apache2
   fi
-  if [ -d "/usr/share/httpd/.git" ]; then
-    git -C /usr/share/httpd reset --hard &>/dev/null
-    if ! git -C /usr/share/httpd pull -q &>/dev/null; then
-      rm_rf "/usr/share/httpd"
-      git clone "https://github.com/casjay-templates/default-web-assets" "/usr/share/httpd" &>/dev/null
+  if [ -d "$httpd_shared/.git" ]; then
+    git -C "$httpd_shared" reset --hard &>/dev/null
+    if ! git -C "$httpd_shared" pull -q &>/dev/null; then
+      rm_rf "$httpd_shared"
+      git clone "https://github.com/casjay-templates/default-web-assets" "$httpd_shared" &>/dev/null
     fi
-    [ -f "/usr/share/httpd/setup.sh" ] && STATICSITE="$sitename" bash -c "/usr/share/httpd/setup.sh"
+    [ -f "$httpd_shared/setup.sh" ] && STATICSITE="$sitename" bash -c "$httpd_shared/setup.sh"
   else
-    mkd /usr/share/httpd
-    cp_rf "$INSTDIR/src/etc-apache2/." /usr/share/httpd/
+    mkd $httpd_shared
+    cp_rf "$INSTDIR/src/etc-apache2/." "$httpd_shared"
   fi
   if [ "$(command -v yum >/dev/null 2>&1)" ] || [ "$(command -v dnf >/dev/null 2>&1)" ]; then
-    find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
-    find /usr/share/httpd -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
   elif [ "$(command -v apt-get >/dev/null 2>&1)" ]; then
-    find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
-    find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
     find /var/www -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
     find /var/www -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
   elif [ "$(command -v pacman >/dev/null 2>&1)" ]; then
-    find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
-    find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
     find /var/www -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; >/dev/null 2>&1
     find /var/www -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; >/dev/null 2>&1
   fi
   if [ -n "$apache2user" ]; then
-    chown -Rf "$apache2user":"$apache2user" /var/www /usr/share/httpd
+    chown -Rf "$apache2user":"$apache2user" /var/www "$httpd_shared"
   fi
 }
 #

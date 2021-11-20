@@ -145,10 +145,11 @@ run_postinst() {
     httpd_log=" /var/log/apache2"
   fi
   mkd "$httpd_dir" "$httpd_log" "$httpd_web/unknown" "$httpd_web/default"
+  [[ -e "$httpd_dir/logs" ]] || ln_sf "$httpd_log" "$httpd_dir/logs"
   cp_rf "$INSTDIR/src/etc-httpd/." "$httpd_dir"
   ln_sf "$INSTDIR/src/apache-share/html/index.default.php" "$httpd_web/default/index.default.php"
   ln_sf "$INSTDIR/src/apache-share/html/index.unknown.php" "$httpd_web/unknown/index.default.php"
-  if [[ -f "$(builtin type -P pacman)" ]]; then
+  if [[ -f "$(builtin type -P pacman 2>/dev/null)" ]]; then
     local apache2user="http"
     cp_rf "$INSTDIR/src/etc-httpd/conf/httpd-arch.conf" "/etc/httpd/conf/httpd.conf"
   elif [ -d /etc/httpd ]; then
@@ -167,15 +168,15 @@ run_postinst() {
     mkd $httpd_shared
     cp_rf "$INSTDIR/src/etc-apache2/." "$httpd_shared"
   fi
-  if [ "$(command -v yum >/dev/null 2>&1)" ] || [ "$(command -v dnf >/dev/null 2>&1)" ]; then
+  if [ -f "$(command -v yum 2>/dev/null)" ] || [ -f "$(command -v dnf 2>/dev/null)" ]; then
     find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
     find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
-  elif [ "$(command -v apt-get >/dev/null 2>&1)" ]; then
+  elif [ -f "$(command -v apt-get 2>/dev/null)" ]; then
     find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
     find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
     find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
     find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
-  elif [ "$(command -v pacman >/dev/null 2>&1)" ]; then
+  elif [ -f "$(command -v pacman 2>/dev/null)" ]; then
     find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
     find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
     find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; >/dev/null 2>&1
@@ -186,9 +187,8 @@ run_postinst() {
   find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
   find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
   if [ -n "$apache2user" ]; then
-    chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log"
+    chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log" "$httpd_dir"
   fi
-  [[ -d "$httpd_dir/logs" ]] || ln_sf "$httpd_log" "$httpd_dir/logs"
   systemctl enable --now httpd || systemctl enable --now apache2
   systemctl restart httpd || systemctl restart apache2
 }

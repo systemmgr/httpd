@@ -138,7 +138,9 @@ run_postinst() {
   httpd_web="/var/www"
   httpd_shared="/usr/share/httpd"
   { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/httpd"; } || { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/apache2"; }
+  mkd "$httpd_dir" "$httpd_web"
   cp_rf "$INSTDIR/src/etc-httpd/." "$httpd_dir"
+  cp_rf "$INSTDIR/src/var-www/." "$httpd_web"
   if [[ -f "$(builtin type -P pacman)" ]]; then
     local apache2user="http"
     cp_rf "$INSTDIR/src/etc-httpd/conf/httpd-arch.conf" "/etc/httpd/conf/httpd.conf"

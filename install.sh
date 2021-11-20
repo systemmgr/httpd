@@ -135,7 +135,7 @@ run_postinst() {
   systemmgr_run_post
   local apache2user sitename httpd_dir httpd_shared httpd_web
   sitename="$(hostname -f)"
-  httpd_web="/var/www"
+  httpd_web="/var/www/html"
   httpd_shared="/usr/share/httpd"
   { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/httpd"; } || { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/apache2"; }
   mkd "$httpd_dir" "$httpd_web"

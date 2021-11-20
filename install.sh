@@ -171,29 +171,28 @@ run_postinst() {
     cp_rf "$INSTDIR/src/share-httpd/." "$httpd_shared"
   fi
   if [ -n "$(builtin type -P pacman 2>/dev/null)" ]; then
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; &>/dev/null
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; &>/dev/null
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; &>/dev/null
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#/etc/redhat-release#/etc/os-release#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|a Redhat based system|an Arch based system|g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"|g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|a Redhat based system|an Arch based system|g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|a Redhat based system|an Arch based system|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|a Redhat based system|an Arch based system|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"|g' {} \; &>/dev/null
   elif [ -n "$(builtin type -P apt-get 2>/dev/null)" ]; then
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
-    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|Redhat based system|Debian based system|g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"|g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|Redhat based system|Debian based system|g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|Redhat based system|Debian based system|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|Redhat based system|Debian based system|g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's|href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">|href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"|g' {} \; &>/dev/null
   fi
   find "$httpd_dir" -not -path "./git/*" -type f,l -iname "*.conf" -exec sed -i "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
   find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -iname "*.*htm*" -exec sed -i "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
   find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -iname "*.*htm*" -exec sed -i "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
-  find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -iname "*.*htm*" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; &>/dev/null
+  find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -iname "*.*htm*" -iname "*.md" -iname "*.css" -exec sed -i 's|static.casjay.net#'$sitename'#g' {} \; &>/dev/null
   find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; &>/dev/null
   ln_sf "$httpd_shared/html/index.default.php" "$httpd_web/default/index.default.php"
   ln_sf "$httpd_shared/html/index.unknown.php" "$httpd_web/unknown/index.unknown.php"

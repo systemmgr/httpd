@@ -144,7 +144,7 @@ run_postinst() {
     httpd_dir="/etc/apache2"
     httpd_log=" /var/log/apache2"
   fi
-  mkd "$httpd_dir" "$httpd_web/unknown" "$httpd_web/default" "$httpd_log"
+  mkd "$httpd_dir" "$httpd_log" "$httpd_web/unknown" "$httpd_web/default"
   cp_rf "$INSTDIR/src/etc-httpd/." "$httpd_dir"
   ln_sf "$INSTDIR/src/apache-share/html/index.default.php" "$httpd_web/default/index.default.php"
   ln_sf "$INSTDIR/src/apache-share/html/index.unknown.php" "$httpd_web/unknown/index.default.php"

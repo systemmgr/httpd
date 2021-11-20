@@ -133,7 +133,8 @@ fi
 # run post install scripts
 run_postinst() {
   systemmgr_run_post
-  local apache2user sitename httpd_dir httpd_shared httpd_web httpd_log httpd_src
+  local apache2user sitename httpd_dir httpd_shared httpd_web httpd_log httpd_src OSVER
+  OSVER="$(grep -s 'BUILD_ID' /etc/*-release | awk -F '=' '{print $2}' | head -n1)"
   sitename="$(hostname -f)"
   httpd_web="/var/www/html"
   httpd_shared="/usr/share/httpd"
@@ -179,8 +180,6 @@ run_postinst() {
     find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#/etc/redhat-release#/etc/os-release#g' {} \; &>/dev/null
     find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; &>/dev/null
     find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#/etc/redhat-release#/etc/os-release#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#/etc/redhat-release#/etc/os-release#g' {} \; &>/dev/null
   elif [ -n "$(builtin type -P apt-get 2>/dev/null)" ]; then
     find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
     find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
@@ -190,8 +189,6 @@ run_postinst() {
     find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
     find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
     find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.php" -exec sed -i 's#/etc/redhat-release#/etc/os-release#g' {} \; &>/dev/null
-    find "$httpd_shared" -not -path "./git/*" -type f,l -iname "*.*htm*" -exec sed -i 's#/etc/redhat-release#/etc/os-release#g' {} \; &>/dev/null
   fi
   find "$httpd_dir" -not -path "./git/*" -type f,l -iname "*.conf" "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
   find "$httpd_web" -not -path "./git/*" -type f,l -iname "*.php" -iname "*.*htm*" "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
@@ -202,6 +199,11 @@ run_postinst() {
   ln_sf "$httpd_shared/html/index.unknown.php" "$httpd_web/unknown/index.unknown.php"
   if [ -n "$apache2user" ]; then
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log" "$httpd_dir"
+  fi
+  if [[ -n "$OSVER" ]]; then
+    echo "$OSVER" >"/etc/casjaysdev/updates/versions/osver.txt"
+  else
+    echo "Unknown"
   fi
   mkd /run/mod_fcgid
   systemctl enable --now httpd || systemctl enable --now apache2

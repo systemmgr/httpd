@@ -132,13 +132,13 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
 run_postinst() {
+  systemmgr_run_post
   local apache2user sitename
   sitename="$(hostname -f)"
-  systemmgr_run_post
-  if if_os_id arch; then
+  if [[ -f "$(builtin type -P pacman)" ]]; then
     local apache2user="http"
     cp_rf "$INSTDIR/src/etc-httpd/." /etc/httpd
-    cp_rf "$INSTDIR/src/etc-httpd/conf/httpd-arch.conf" "$INSTDIR/src/etc-httpd/conf/httpd.conf"
+    cp_rf "$INSTDIR/src/etc-httpd/conf/httpd-arch.conf" "/etc/httpd/conf/httpd.conf"
   elif [ -d /etc/httpd ]; then
     local apache2user="httpd"
     cp_rf "$INSTDIR/src/etc-httpd/." /etc/httpd
@@ -156,10 +156,11 @@ run_postinst() {
   else
     mkd /usr/share/httpd
     cp_rf "$INSTDIR/src/etc-apache2/." /usr/share/httpd/
+  fi
+  if [ "$(command -v yum >/dev/null 2>&1)" ] || [ "$(command -v dnf >/dev/null 2>&1)" ]; then
     find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
     find /usr/share/httpd -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
-  fi
-  if [ "$(command -v apt-get >/dev/null 2>&1)" ]; then
+  elif [ "$(command -v apt-get >/dev/null 2>&1)" ]; then
     find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
     find /usr/share/httpd -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
     find /var/www -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1

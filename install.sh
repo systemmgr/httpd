@@ -179,6 +179,8 @@ run_postinst() {
   if [ -n "$apache2user" ]; then
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared"
   fi
+  systemctl enable --now httpd || systemctl enable --now apache2
+  systemctl restart httpd || systemctl restart apache2
 }
 #
 execute "run_postinst" "Running post install scripts"

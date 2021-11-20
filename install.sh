@@ -177,6 +177,8 @@ run_postinst() {
   fi
   find "$httpd_dir" -not -path "./git/*" -type f -iname "*.conf" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1
   find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1
+  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
+  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
   if [ -n "$apache2user" ]; then
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared"
   fi

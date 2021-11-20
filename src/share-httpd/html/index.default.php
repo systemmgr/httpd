@@ -32,7 +32,7 @@
     <?php echo $_SERVER['DOCUMENT_ROOT']; ?> <br><br><br>
     <?php echo "Server Name: " . $_SERVER['SERVER_NAME'] . "<BR>"; ?>
     <?php echo "IP Address: " . $_SERVER['SERVER_ADDR'] . "<BR>"; ?> <br>
-    Linux OsVer: <?php echo shell_exec('cat /etc/redhat-release'); ?> <br>
+    Linux OsVer: <?php echo shell_exec('cat /etc/redhat-release | grep 'BUILD_ID' | awk -F '=' '{print $2}''); ?> <br>
     ConfigVer: <?php echo shell_exec(
   'cat /etc/casjaysdev/updates/versions/configs.txt'
 ); ?>

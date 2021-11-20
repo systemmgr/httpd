@@ -199,6 +199,7 @@ run_postinst() {
   ln_sf "$httpd_shared/html/index.unknown.php" "$httpd_web/unknown/index.unknown.php"
   if [ -n "$apache2user" ]; then
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log" "$httpd_dir"
+    sed -i "s|replace_apache|$apache2user|g" "$APPDIR/src/php/php-fpm.conf"
   fi
   if [[ -n "$OSVER" ]]; then
     echo "$OSVER" >"/etc/casjaysdev/updates/versions/osver.txt"

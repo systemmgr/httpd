@@ -133,12 +133,18 @@ fi
 # run post install scripts
 run_postinst() {
   systemmgr_run_post
-  local apache2user sitename httpd_dir httpd_shared httpd_web
+  local apache2user sitename httpd_dir httpd_shared httpd_web httpd_log
   sitename="$(hostname -f)"
   httpd_web="/var/www/html"
   httpd_shared="/usr/share/httpd"
-  { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/httpd"; } || { [[ -d "$httpd_dir" ]] && httpd_dir="/etc/apache2"; }
-  mkd "$httpd_dir" "$httpd_web/unknown" "$httpd_web/default"
+  if [[ -d "$httpd_dir" ]]; then
+    httpd_dir="/etc/httpd"
+    httpd_log=" /var/log/httpd"
+  elif [[ -d "$httpd_dir" ]]; then
+    httpd_dir="/etc/apache2"
+    httpd_log=" /var/log/apache2"
+  fi
+  mkd "$httpd_dir" "$httpd_web/unknown" "$httpd_web/default" "$httpd_log"
   cp_rf "$INSTDIR/src/etc-httpd/." "$httpd_dir"
   ln_sf "$INSTDIR/src/apache-share/html/index.default.php" "$httpd_web/default/index.default.php"
   ln_sf "$INSTDIR/src/apache-share/html/index.unknown.php" "$httpd_web/unknown/index.default.php"
@@ -180,8 +186,9 @@ run_postinst() {
   find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
   find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
   if [ -n "$apache2user" ]; then
-    chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared"
+    chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log"
   fi
+  [[ -d "$httpd_dir/logs" ]] || ln_sf "$httpd_log" "$httpd_dir/logs"
   systemctl enable --now httpd || systemctl enable --now apache2
   systemctl restart httpd || systemctl restart apache2
 }

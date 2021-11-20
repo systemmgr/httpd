@@ -154,8 +154,6 @@ run_postinst() {
   [[ -d "$httpd_web/default" ]] || mkd "$httpd_web/default"
   [[ -L "$httpd_dir/logs" ]] || ln_sf "$httpd_log" "$httpd_dir/logs"
   cp_rf "$INSTDIR/src/$httpd_src/." "$httpd_dir"
-  ln_sf "$INSTDIR/src/apache-share/html/index.default.php" "$httpd_web/default/index.default.php"
-  ln_sf "$INSTDIR/src/apache-share/html/index.unknown.php" "$httpd_web/unknown/index.unknown.php"
   if [[ -f "$(builtin type -P pacman 2>/dev/null)" ]]; then
     apache2user="http"
     cp_rf "$INSTDIR/src/etc-httpd/conf/httpd-arch.conf" "/etc/httpd/conf/httpd.conf"
@@ -187,6 +185,8 @@ run_postinst() {
   find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1
   find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
   find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
+  ln_sf "$httpd_shared/html/index.default.php" "$httpd_web/default/index.default.php"
+  ln_sf "$httpd_shared/html/index.unknown.php" "$httpd_web/unknown/index.unknown.php"
   if [ -n "$apache2user" ]; then
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log" "$httpd_dir"
   fi

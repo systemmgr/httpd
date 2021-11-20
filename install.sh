@@ -169,22 +169,22 @@ run_postinst() {
     mkd $httpd_shared
     cp_rf "$INSTDIR/src/share-httpd/." "$httpd_shared"
   fi
-  if [ -f "$(command -v pacman 2>/dev/null)" ]; then
-    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; >/dev/null 2>&1
-    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; >/dev/null 2>&1
-    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; >/dev/null 2>&1
-    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; >/dev/null 2>&1
-  elif [ -f "$(command -v apt-get 2>/dev/null)" ]; then
-    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
-    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
-    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; >/dev/null 2>&1
-    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; >/dev/null 2>&1
+  if [ -f "$(builtin type -P pacman 2>/dev/null)" ]; then
+    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Arch based system#g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://archlinux.org"> <img border="0" alt="ArchLinux" src="/default-icons/powered_by_archlinux.png"#g' {} \; &>/dev/null
+  elif [ -f "$(builtin type -P apt-get 2>/dev/null)" ]; then
+    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
+    find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#Redhat based system#Debian based system#g' {} \; &>/dev/null
+    find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -exec sed -i 's#href="https://redhat.com"> <img border="0" alt="Redhat/CentOS/Fedora/SL Linux" src="/default-icons/powered_by_redhat.jpg">#href="https://debian.com"> <img border="0" alt="Debian/Ubuntu/Mint" src="/default-icons/powered_by_debian.jpg"#g' {} \; &>/dev/null
   fi
-  find "$httpd_dir" -not -path "./git/*" -type f -iname "*.conf" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1
-  find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1
-  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" "s|myserverdomainname|$sitename|g" {} \; >/dev/null 2>&1
-  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; >/dev/null 2>&1
-  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; >/dev/null 2>&1
+  find "$httpd_dir" -not -path "./git/*" -type f -iname "*.conf" "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
+  find "$httpd_web" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
+  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" "s|myserverdomainname|$sitename|g" {} \; &>/dev/null
+  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.php" -iname ".*html" -iname "*.md" -iname "*.css" -exec sed -i 's#static.casjay.net#'$sitename'#g' {} \; &>/dev/null
+  find "$httpd_shared" -not -path "./git/*" -type f -iname "*.sh" -iname "*.pl" -iname "*.cgi" -exec chmod 755 -Rf {} \; &>/dev/null
   ln_sf "$httpd_shared/html/index.default.php" "$httpd_web/default/index.default.php"
   ln_sf "$httpd_shared/html/index.unknown.php" "$httpd_web/unknown/index.unknown.php"
   if [ -n "$apache2user" ]; then

@@ -133,8 +133,9 @@ fi
 # run post install scripts
 run_postinst() {
   systemmgr_run_post
-  local apache2user sitename httpd_dir httpd_shared httpd_web httpd_log httpd_src OSVER
-  OSVER="$(grep -s 'BUILD_ID' /etc/*-release | awk -F '=' '{print $2}' | head -n1)"
+  local apache2user sitename httpd_dir httpd_shared httpd_web httpd_log httpd_src GET_OSNAME GET_OSVER
+  GET_OSNAME="$(grep -s 'NAME=' /etc/*-release | awk -F '=' '{print $2}' | head -n1)"
+  GET_OSVER="$(grep -s 'BUILD_ID' /etc/*-release | awk -F '=' '{print $2}' | head -n1)"
   sitename="$(hostname -f)"
   httpd_web="/var/www/html"
   httpd_shared="/usr/share/httpd"
@@ -200,14 +201,18 @@ run_postinst() {
     sed -i "s|replace_apache|$apache2user|g" "$APPDIR/src/php/php-fpm.conf"
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log" "$httpd_dir"
   fi
-  if [[ -n "$OSVER" ]]; then
-    echo "$OSVER" >"/etc/casjaysdev/updates/versions/osver.txt"
-  else
-    echo "Unknown"
-  fi
   mkd /run/mod_fcgid
   systemctl enable --now httpd || systemctl enable --now apache2
   systemctl restart httpd || systemctl restart apache2
+  if [ -n "$GET_OSNAME" ] && [ -n "$GET_OSVER" ]; then
+    printf '%s\n' "$GET_OSNAME $GET_OSVER" >"/etc/casjaysdev/updates/versions/osver.txt"
+  elif [ -n "$GET_OSNAME" ]; then
+    printf '%s\n' "$GET_OSNAME" >"/etc/casjaysdev/updates/versions/osver.txt"
+  elif [ -n "$GET_OSVER" ]; then
+    printf '%s\n' "$GET_OSVER" >"/etc/casjaysdev/updates/versions/osver.txt"
+  else
+    printf '%s\n' 'Unknown' >"/etc/casjaysdev/updates/versions/osver.txt"
+  fi
 }
 #
 execute "run_postinst" "Running post install scripts"

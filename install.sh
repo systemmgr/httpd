@@ -170,6 +170,7 @@ run_postinst() {
     sed -i "s|replace_apache|$apache2user|g" "$APPDIR/src/php/php-fpm.conf"
     chown -Rf "$apache2user":"$apache2user" "$httpd_web" "$httpd_shared" "$httpd_log" "$httpd_dir"
   fi
+  cmd_exists changeip && changeip &>/dev/null
   mkd /run/mod_fcgid
   systemctl enable --now httpd || systemctl enable --now apache2
   systemctl restart httpd || systemctl restart apache2

@@ -1,9 +1,7 @@
 #Copy to /etc/apache2/sites-available/servername.conf
-
 #Primary VirtualHost - Full Domain
 
 <IfModule mod_ssl.c>
-
 <VirtualHost _default_:8443>
 ServerName DOMAIN
 ServerAdmin webmaster@DOMAIN
@@ -14,11 +12,10 @@ RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 
-##LE Certs
+##local Certs
 SSLEngine on
 SSLCertificateFile /etc/ssl/CA/CasjaysDev/certs/localhost.crt
 SSLCertificateKeyFile /etc/ssl/CA/CasjaysDev/private/localhost.key
-#SSLCertificateChainFile /etc/ssl/CA/CasjaysDev/certs/localhost.crt
 
 #Headers
 Header always set Strict-Transport-Security "max-age=31536000; preload"

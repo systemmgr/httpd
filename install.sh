@@ -143,12 +143,12 @@ run_postinst() {
     apache2user="httpd"
     httpd_src="etc-httpd"
     httpd_dir="/etc/httpd"
-    httpd_log=" /var/log/httpd"
+    httpd_log="/var/log/httpd"
   elif [[ -d "/etc/apache2" ]]; then
     apache2user="www-data"
     httpd_src="etc-apache2"
     httpd_dir="/etc/apache2"
-    httpd_log=" /var/log/apache2"
+    httpd_log="/var/log/apache2"
   fi
   [[ -d "$httpd_dir" ]] || mkd "$httpd_dir"
   [[ -d "$httpd_log" ]] || mkd "$httpd_log"

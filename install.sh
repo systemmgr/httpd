@@ -149,6 +149,10 @@ run_postinst() {
     httpd_src="etc-apache2"
     httpd_dir="/etc/apache2"
     httpd_log="/var/log/apache2"
+    a2enmod access_compat alias asis auth_basic authn_core authn_file authz_core authz_host authz_user autoindex \
+      brotli cgi cgid charset_lite data deflate dir env expires fcgid filter geoip headers lbmethod_bybusyness \
+      lua mime mpm_prefork negotiation php7.4 proxy proxy_balancer reqtimeout request rewrite session \
+      session_dbd setenvif slotmem_shm socache_shmcb speling status userdir vhost_alias xml2enc
   fi
   [[ -d "$httpd_dir" ]] || mkd "$httpd_dir"
   [[ -d "$httpd_log" ]] || mkd "$httpd_log"

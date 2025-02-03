@@ -138,7 +138,7 @@ run_postinst() {
   GET_OSVER="$(grep -s 'BUILD_ID' /etc/*-release | awk -F '=' '{print $2}' | head -n1)"
   sitename="$(hostname -f)"
   httpd_web="/var/www/html"
-  httpd_shared="/usr/share/httpd"
+  httpd_shared="/usr/local/share/httpd"
   if [[ -d "/etc/httpd" ]]; then
     apache2user="httpd"
     httpd_src="etc-httpd"
